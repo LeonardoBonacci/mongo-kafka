@@ -147,32 +147,37 @@ public final class ConnectionValidator {
 
       Document authInfo = connectionStatus.get(AUTH_INFO, new Document());
 
-      List<Document> authenticatedUserPrivileges =
-          authInfo.getList(AUTH_USER_PRIVILEGES, Document.class, emptyList());
-      List<String> unsupportedActions =
-          removeUserActions(
-              authenticatedUserPrivileges,
-              credential.getSource(),
-              databaseName,
-              collectionName,
-              actions);
+      // FAILS ON COSMOS MONGO API
+      // probably due to different roles/privileges
+      
+      //      List<Document> authenticatedUserPrivileges =
+      //          authInfo.getList(AUTH_USER_PRIVILEGES, Document.class, emptyList());
+      //      List<String> unsupportedActions =
+      //          removeUserActions(
+      //              authenticatedUserPrivileges,
+      //              credential.getSource(),
+      //              databaseName,
+      //              collectionName,
+      //              actions);
 
       // Check against the users roles for permissions
-      unsupportedActions =
-          removeRoleActions(
-              mongoClient, credential, databaseName, collectionName, authInfo, unsupportedActions);
-      if (unsupportedActions.isEmpty()) {
-        return;
-      }
+      //      unsupportedActions =
+      //          removeRoleActions(
+      //              mongoClient, credential, databaseName, collectionName, authInfo,
+      // unsupportedActions);
+      //      if (unsupportedActions.isEmpty()) {
+      //        return;
+      //      }
 
-      String missingPermissions = String.join(", ", unsupportedActions);
-      ConfigHelper.getConfigByName(config, configName)
-          .ifPresent(
-              c ->
-                  c.addErrorMessage(
-                      format(
-                          "Invalid user permissions. Missing the following action permissions: %s",
-                          missingPermissions)));
+      //      String missingPermissions = String.join(", ", unsupportedActions);
+      //      ConfigHelper.getConfigByName(config, configName)
+      //          .ifPresent(
+      //              c ->
+      //                  c.addErrorMessage(
+      //                      format(
+      //                          "Invalid user permissions. Missing the following action
+      // permissions: %s",
+      //                          missingPermissions)));
     } catch (MongoSecurityException e) {
       ConfigHelper.getConfigByName(config, configName)
           .ifPresent(
